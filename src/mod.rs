@@ -5,8 +5,6 @@
  * However, I was unable to find any crates which did a better job
  */
 
-#![allow(dead_code)]
-
 use std::io::Result;
 use std::io::Error;
 use std::io::ErrorKind;
@@ -29,6 +27,11 @@ struct JataProp {
 	jtype: JataType,
 }
 
+struct JataObject {
+	location: String,
+	properties: Vec<JataProp>
+}
+
 impl JataProp {
 
 	fn new_raw(name: String, location: String, jtype: JataType, value: String) -> Result<JataProp> {
@@ -37,20 +40,20 @@ impl JataProp {
     	Ok(JataProp{name: name, location: location.clone(), jtype: jtype})
 	}
 
-	fn new_str(name: String, location: String, jtype: JataType, value: String) -> Result<JataProp> {
-		JataProp::new_raw(name, location, jtype, value)
+	fn new_str(name: String, location: String, value: String) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::Str, value)
 	}
 
-	fn new_int(name: String, location: String, jtype: JataType, value: isize) -> Result<JataProp> {
-		JataProp::new_raw(name, location, jtype, format!("{}", value))
+	fn new_int(name: String, location: String, value: isize) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::Int, format!("{}", value))
 	}
 
-	fn new_float(name: String, location: String, jtype: JataType, value: f32) -> Result<JataProp> {
-		JataProp::new_raw(name, location, jtype, format!("{}", value))
+	fn new_float(name: String, location: String, value: f32) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::Float, format!("{}", value))
 	}
 
-	fn new_bool(name: String, location: String, jtype: JataType, value: bool) -> Result<JataProp> {
-		JataProp::new_raw(name, location, jtype, match value {
+	fn new_bool(name: String, location: String, value: bool) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::Bool, match value {
 			false => String::from("0"),
 			true => String::from("1")
 		})
@@ -70,7 +73,9 @@ impl JataProp {
 		else {
 			Err(Error::new(
 				ErrorKind::InvalidData,
-				format!("The data at {} is not of type: {}", self.location, stringify!(jtype))
+				format!("The data at {} is not of type: {}",
+						self.location,
+						stringify!(jtype))
 			))
 		}
 	}
@@ -111,16 +116,12 @@ impl JataProp {
 					"1" => Ok(true),
 					_ => Err(Error::new(
 						ErrorKind::InvalidData,
-						format!("The file at {} did not contain 0 or 1", self.location)
+						format!("The file at {} did not contain 0 or 1",
+								self.location)
 					))
 				}
 			}
 			Err(e) => Err(e)
 		}
 	}
-}
-
-struct JataObject {
-	location: String,
-	properties: Vec<JataProp>
 }
