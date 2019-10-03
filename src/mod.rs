@@ -13,6 +13,8 @@ use std::io::ErrorKind;
 use std::fs::File;
 use std::io::prelude::*;
 
+pub mod jata;
+
 #[derive(PartialEq)]
 enum JataType {
 	Str,
