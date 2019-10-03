@@ -18,7 +18,11 @@ enum JataType {
 	Str,
 	Int,
 	Float,
-	Bool
+	Bool,
+	StrList,
+	IntList,
+	FloatList,
+	BoolList
 }
 
 struct JataProp {
@@ -57,6 +61,34 @@ impl JataProp {
 			false => String::from("0"),
 			true => String::from("1")
 		})
+	}
+
+	fn new_str_list(name: String, location: String, value: Vec<String>) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType, value.join("\n"))
+	}
+
+	fn new_int_list(name: String, location: String, value: Vec<isize>) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::IntList,
+							value.iter()
+							.map(|i| format!("{}", i))
+							.join("\n"))
+	}
+
+	fn new_float_list(name: String, location: String, value: Vec<f32>) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::FloatList,
+							value.iter()
+							.map(|f| format!("{}", f))
+							.join("\n"))
+	}
+
+	fn new_bool_list(name: String, location: String, value: Vec<bool>) -> Result<JataProp> {
+		JataProp::new_raw(name, location, JataType::BoolList,
+							value.iter()
+							.map(|b| match b {
+								false => String::from("0"),
+								true => String::from("1")
+							})
+							.join("\n"))
 	}
 
 	fn get_raw(&self) -> Result<String> {
