@@ -164,4 +164,46 @@ impl JataProp {
 			.map(|s| String::from(s))
 			.collect::<Vec<String>>())
 	}
+
+	fn get_int_list(&self) -> Result<Vec<isize>> {
+		let string = self.get_raw_result(JataType::IntList)?;
+		let vec = string.split_terminator("\n");
+		let mut ints : Vec<isize> = Vec::new();
+		for result in vec {
+			match result.parse::<isize>() {
+				Ok(i) => ints.push(i),
+				Err(e) => return Err(Error::new(ErrorKind::InvalidData, e))
+			}
+		}
+		Ok(ints)
+	}
+
+	fn get_float_list(&self) -> Result<Vec<f32>> {
+		let string = self.get_raw_result(JataType::IntList)?;
+		let vec = string.split_terminator("\n");
+		let mut floats : Vec<f32> = Vec::new();
+		for result in vec {
+			match result.parse::<f32>() {
+				Ok(f) => floats.push(f),
+				Err(e) => return Err(Error::new(ErrorKind::InvalidData, e))
+			}
+		}
+		Ok(floats)
+	}
+
+	fn get_bool_list(&self) -> Result<Vec<bool>> {
+		let string = self.get_raw_result(JataType::BoolList)?;
+		let vec = string.split_terminator("\n");
+		let mut bools : Vec<bool> = Vec::new();
+		for result in vec {
+			match result {
+				"0" => bools.push(false),
+				"1" => bools.push(true),
+				_ => return Err(Error::new(ErrorKind::InvalidData,
+								format!("The data at {} did not contain a 0 or 1", self.location)
+				))
+			}
+		}
+		Ok(bools)
+	}
 }
