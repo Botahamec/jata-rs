@@ -11,8 +11,6 @@ use std::io::ErrorKind;
 use std::fs::File;
 use std::io::prelude::*;
 
-pub mod jata;
-
 #[derive(PartialEq)]
 enum JataType {
 	Str,
@@ -83,13 +81,14 @@ impl JataProp {
 	}
 
 	fn new_str_list(name: String, location: String, value: Vec<String>) -> Result<JataProp> {
-		JataProp::new_raw(name, location, JataType, value.join("\n"))
+		JataProp::new_raw(name, location, JataType::StrList, value.join("\n"))
 	}
 
 	fn new_int_list(name: String, location: String, value: Vec<isize>) -> Result<JataProp> {
 		JataProp::new_raw(name, location, JataType::IntList,
 							value.iter()
 							.map(|i| format!("{}", i))
+							.collect::<Vec<String>>()
 							.join("\n"))
 	}
 
@@ -97,6 +96,7 @@ impl JataProp {
 		JataProp::new_raw(name, location, JataType::FloatList,
 							value.iter()
 							.map(|f| format!("{}", f))
+							.collect::<Vec<String>>()
 							.join("\n"))
 	}
 
@@ -107,6 +107,7 @@ impl JataProp {
 								false => String::from("0"),
 								true => String::from("1")
 							})
+							.collect::<Vec<String>>()
 							.join("\n"))
 	}
 
@@ -174,5 +175,12 @@ impl JataProp {
 			}
 			Err(e) => Err(e)
 		}
+	}
+
+	fn get_str_list(&self) -> Result<Vec<String>> {
+		let vec = self.get_raw_result(JataType::StrList)?;
+		Ok(vec.split_terminator("\n")
+			.map(|s| String::from(s))
+			.collect::<Vec<String>>())
 	}
 }
