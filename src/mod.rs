@@ -36,12 +36,31 @@ struct JataObject {
 	properties: Vec<JataProp>
 }
 
+macro_rules! struct {
+	($name: ty) => {
+		struct $name {
+			name: String,
+			location: String,
+			properties: Vec<JataProp>
+		}
+
+		impl $name {
+			fn new(location: String) -> $name {
+				$name {name: stringify!($name), location: location, properties: Vec::new()}
+			}
+		}
+	};
+}
+
+struct!{ServerInfo}
+
 impl JataProp {
 
 	fn new_raw(name: String, location: String, jtype: JataType, value: String) -> Result<JataProp> {
 		let mut file = File::create(location.clone())?;
     	file.write_all(value.as_bytes())?;
     	Ok(JataProp{name: name, location: location.clone(), jtype: jtype})
+		ServerInfo::new()
 	}
 
 	fn new_str(name: String, location: String, value: String) -> Result<JataProp> {
