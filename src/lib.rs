@@ -5,6 +5,8 @@
  * However, I was unable to find any crates which did a better job
  */
 
+#![allow(dead_code)]
+
 use std::io::Result;
 use std::io::Error;
 use std::io::ErrorKind;
@@ -149,8 +151,9 @@ impl JataProp {
 					"1" => Ok(true),
 					_ => Err(Error::new(
 						ErrorKind::InvalidData,
-						format!("The file at {} did not contain 0 or 1",
-								self.location)
+						format!("The file at {} did not contain 0 or 1, but instead contained {}",
+								self.location,
+								s)
 					))
 				}
 			}
@@ -200,7 +203,9 @@ impl JataProp {
 				"0" => bools.push(false),
 				"1" => bools.push(true),
 				_ => return Err(Error::new(ErrorKind::InvalidData,
-								format!("The data at {} did not contain a 0 or 1", self.location)
+								format!("The data at {} did not contain a 0 or 1, but instead contained {}",
+								self.location,
+								result)
 				))
 			}
 		}
