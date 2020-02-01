@@ -9,7 +9,7 @@ use std::str::FromStr;
  * This is a struct containing a path to a file.
  * It takes a generic type which defines what type the file contains.
  */
-pub struct JataFile<T: ToString + FromStr + Default> {
+pub struct JataFile<T: ToString + FromStr> {
 
 	/** A path to the file */
 	pub path: String,
@@ -18,14 +18,7 @@ pub struct JataFile<T: ToString + FromStr + Default> {
 	pub value: T
 }
 
-impl<T> JataFile<T> where T: ToString + FromStr + Default {
-
-	/**
-	 * The default constructor which doesn't initiate any fields
-	 */
-	pub fn new() -> Self {
-		Self::default()
-	}
+impl<T> JataFile<T> where T: ToString + FromStr {
 
 	/**
 	 * Checks and returns the current value of the file.
