@@ -4,7 +4,6 @@ use std::fs::write;
 use std::io::Error;
 use std::str::FromStr;
 
-#[derive(Default)]
 /**
  * This is a struct containing a path to a file.
  * It takes a generic type which defines what type the file contains.
