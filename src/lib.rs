@@ -6,6 +6,7 @@ pub trait JataType where Self: std::marker::Sized {
 	fn to_str(self) -> String;
 }
 
+#[Clone, Default, PartialEq]
 pub struct JataFile<T> where T: JataType {
 	path: String,
 	value: T
