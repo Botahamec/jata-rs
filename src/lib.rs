@@ -21,12 +21,12 @@ pub trait JataType where Self: std::marker::Sized {
 }
 
 
-#[derive(Clone, Default)]
+#[derive(Default)]
 /**
  * This is a struct containing a path to a file.
  * It takes a generic type which defines what type the file contains.
  */
-pub struct JataFile<T: JataType + Default + Clone> {
+pub struct JataFile<T: JataType + Default> {
 
 	/** A path to the file */
 	path: String,
@@ -35,7 +35,7 @@ pub struct JataFile<T: JataType + Default + Clone> {
 	value: T
 }
 
-impl<T> JataFile<T> where T: JataType + Default + Clone {
+impl<T> JataFile<T> where T: JataType + Default {
 
 	/**
 	 * The default constructor which doesn't initiate any fields
@@ -58,12 +58,13 @@ impl<T> JataFile<T> where T: JataType + Default + Clone {
 
 	/**
 	 * Checks the value of the file and sets the current value if applicable.
-	 * Returns the value if applicable.
+	 * Returns Some(()) if the check was successful.
+	 * Return None if there was a problem with reading or parsing the file.
 	 */
-	pub fn reset_value(&mut self) -> Option<T> {
+	pub fn reset_value(&mut self) -> Option<()> {
 		match read_to_string(self.path.clone()) {
 			Ok(s) => match T::read(s) {
-				Some(t) => {self.value = t.clone(); return Some(t)},
+				Some(t) => {self.value = t; Some(())},
 				None => None
 			},
 			Err(_e) => None
