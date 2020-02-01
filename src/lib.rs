@@ -1,5 +1,6 @@
 
 use std::fs::read_to_string;
+use std::fs::write;
 
 /**
  * This allows a type to be used with Jata.
@@ -17,7 +18,7 @@ pub trait JataType where Self: std::marker::Sized {
 	/**
 	 * Converts the type to a String.
 	*/
-	fn to_str(self) -> String;
+	fn to_str(&self) -> String;
 }
 
 
@@ -67,6 +68,20 @@ impl<T> JataFile<T> where T: JataType + Default {
 				Some(t) => {self.value = t; Some(())},
 				None => None
 			},
+			Err(_e) => None
+		}
+	}
+
+	/**
+	 * Sets the value and writes the value to the file.
+	 * Returns Some(()) if the write was successful
+	 * Returns None if there was an error in writing to the file
+	 */
+	pub fn set_value(&mut self, value: T) -> Option<()> {
+		self.value = value;
+		let string_rep = self.value.to_str();
+		match write(self.path.clone(), string_rep) {
+			Ok(_o) => Some(()),
 			Err(_e) => None
 		}
 	}
