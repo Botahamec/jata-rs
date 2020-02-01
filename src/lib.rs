@@ -40,7 +40,7 @@ impl<T> JataFile<T> where T: JataType + Default + Clone {
 	/**
 	 * The default constructor which doesn't initiate any fields
 	 */
-	pub fn new(self) -> Self {
+	pub fn new() -> Self {
 		Self::default()
 	}
 
